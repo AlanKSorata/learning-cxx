@@ -10,6 +10,7 @@
 // READ: 类型别名 <https://zh.cppreference.com/w/cpp/language/type_alias>
 using udim = unsigned int;
 
+// 步长（stride）就是“沿着某一维移动 1 个元素时，需要在内存里跨越多少个标量”
 /// @brief 计算连续存储张量的步长
 /// @param shape 张量的形状
 /// @return 张量每维度的访问步长
@@ -18,6 +19,12 @@ std::vector<udim> strides(std::vector<udim> const &shape) {
     // TODO: 完成函数体，根据张量形状计算张量连续存储时的步长。
     // READ: 逆向迭代器 std::vector::rbegin <https://zh.cppreference.com/w/cpp/container/vector/rbegin>
     //       使用逆向迭代器可能可以简化代码
+    if (shape.empty()) return strides;
+    strides.back() = 1;
+    for (auto rit = shape.rbegin() + 1; rit != shape.rend(); rit ++) {
+        auto idx = shape.rend() - rit - 1;
+        strides[idx] = strides[idx + 1] * *(rit - 1);
+    }
     return strides;
 }
 
